@@ -1,0 +1,50 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width='50%', fig.align='center')
+library(tidyverse)
+library(gridExtra)
+data(diamonds)
+```
+
+Part 1
+In this part, we are focusing on how the quality of the cut (the variable cut) influence the diamonds price (the variable price), using the dataset diamond that has been uploaded in the above chunk.
+
+## a. Create a facet $geom_histogram()$ plot to show their correlation. 
+```{r, echo=T}
+   ggplot(data=diamonds,aes(x=price)) + facet_wrap(~ cut) + geom_histogram()
+```
+
+## b. Create a colored $geom$_$freqpoly()$ plot. 
+```{r, echo=T}
+   ggplot(data=diamonds,mapping=aes(x=price,color=cut))+geom_freqpoly()
+```
+## c. Create a $geom_violin()$ plot.
+```{r, echo=T}
+  ggplot(data=diamonds,mapping=aes(x=cut,y=price))+geom_violin()
+```
+
+
+Part2
+
+# Still use the data diamonds.
+
+## a. Visualize the distribution of weight of the diamond (carat), partitioned by price. 
+```{r, echo=T}
+    ggplot(data = diamonds, mapping = aes(x =   price, y = carat)) +
+geom_point() +geom_smooth()
+```
+
+## b.	How does the price distribution of very large diamonds compare to small diamonds? 
+```{r, echo=T}
+   q3b<-diamonds %>%mutate(size=ifelse(carat<0.45,"small",ifelse(carat<0.95,"medium","large")))
+   verylargediamonds<-q3b%>%filter(size=="large")
+   verysmalldiamonds<-q3b%>%filter(size=="small")
+   p1 <- qplot( price, data=verylargediamonds, geom="freqpoly",xlim=c(0,20000),main="very large diamonds")
+   p2 <- qplot( price, data=verysmalldiamonds, geom="freqpoly",xlim=c(0,20000),main="small diamonds") 
+   grid.arrange(p1, p2,ncol=2)
+```
+
+## c. Combine two of the techniques in part1 and part2 to visualize the combined distribution of cut, carat, and price.
+```{r, echo=T}
+   ggplot(data=diamonds,aes(x=price,y=carat,color=cut))+geom_point()+geom_smooth()+facet_grid(~cut)
+
+```
